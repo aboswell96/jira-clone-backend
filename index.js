@@ -7,8 +7,8 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 
-const { startDatabase } = require("./database/mongo");
-const { insertAd, getAds } = require("./database/ads");
+// const { startDatabase } = require("./database/mongo");
+// const { insertAd, getAds } = require("./database/ads");
 
 // defining the Express app
 const app = express();
@@ -30,15 +30,20 @@ app.use(morgan("combined"));
 
 // defining an endpoint to return all ads
 app.get("/", async (req, res) => {
-  res.send(await getAds());
+  res.send("gets ads");
 });
 
-// start the in-memory MongoDB instance
-startDatabase().then(async () => {
-  await insertAd({ title: "Hello, now from the in-memory database!" });
+// // start the in-memory MongoDB instance
+// startDatabase().then(async () => {
+//   await insertAd({ title: "Hello, now from the in-memory database!" });
 
-  // start the server
-  app.listen(3001, async () => {
-    console.log("listening on port 3001");
-  });
+//   // start the server
+//   app.listen(3001, async () => {
+//     console.log("listening on port 3001");
+//   });
+// });
+
+// start the server
+app.listen(3001, async () => {
+  console.log("listening on port 3001");
 });
