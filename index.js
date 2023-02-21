@@ -44,6 +44,8 @@ app.get("/", async (req, res) => {
 // });
 
 // start the server
-app.listen(process.env.PORT || 5000, async () => {
-  console.log("listening on port 3001");
+const host = "0.0.0.0";
+const port = process.env.PORT || 3000;
+app.listen(port, host, async () => {
+  console.log("listening on host=" + host + ",port=" + port);
 });
