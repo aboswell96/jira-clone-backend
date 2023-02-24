@@ -19,9 +19,10 @@
     "mongodb": "^5.0.1",
     "mongodb-memory-server": "^8.11.4",
     "morgan": "^1.10.0",
+    "pg": "^8.9.0",
     "uuid": "^9.0.0"
   },
   "engines": {
-    "node": "18.x"
+    "node": "16.x"
   }
 }
