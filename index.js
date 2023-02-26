@@ -6,7 +6,10 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
-const { clientDemo } = require("./database/postgres");
+const { createTicket, getTickets } = require("./database/tickets");
+const { getSettings, updateSetting } = require("./database/settings");
+const { getComments, createComment } = require("./database/comments");
+// const { clientDemo } = require("./database/postgres");
 
 // defining the Express app
 const app = express();
@@ -28,10 +31,63 @@ app.get("/", async (req, res) => {
   res.send("jira clone backend homepage");
 });
 
-(async () => {
-  const clientResult = await clientDemo();
-  console.log("client result " + JSON.stringify(clientResult.rows));
-})();
+app.post("/tickets", async (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.status(200);
+  const data = await createTicket(
+    2,
+    "test",
+    "sl1",
+    "low",
+    1,
+    "dasdasdas",
+    "bug"
+  );
+  res.json({ ...data.rows[0] });
+});
+
+app.get("/tickets", async (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.status(200);
+  const data = await getTickets();
+  console.log(data);
+  res.json({ total: data.rows.length, data: data.rows });
+});
+
+app.get("/settings", async (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.status(200);
+  const data = await getSettings();
+  res.json({ settings: data.rows });
+});
+
+app.put("/settings", async (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.status(200);
+  const data = await updateSetting();
+  res.json({ settings: data.rows });
+});
+
+app.get("/comments", async (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.status(200);
+  const data = await getComments();
+  console.log(data);
+  res.json({ total: data.rows.length, data: data.rows });
+});
+
+app.post("/comments", async (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.status(200);
+  const data = await createComment();
+  console.log(data);
+  res.json({ ...data.rows[0] });
+});
+
+// (async () => {
+//   const clientResult = await clientDemo();
+//   console.log("client result " + JSON.stringify(clientResult.rows));
+// })();
 
 // start the server
 const host = "0.0.0.0";
