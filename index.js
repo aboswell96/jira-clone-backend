@@ -9,6 +9,10 @@ const morgan = require("morgan");
 const { createTicket, getTickets } = require("./database/tickets");
 const { getSettings, updateSetting } = require("./database/settings");
 const { getComments, createComment } = require("./database/comments");
+const { getUsers } = require("./database/users");
+const {
+  deleteAllDatabaseRowsAndInsertSeededData,
+} = require("./database/resetDatabase");
 // const { clientDemo } = require("./database/postgres");
 
 // defining the Express app
@@ -82,6 +86,22 @@ app.post("/comments", async (req, res) => {
   const data = await createComment();
   console.log(data);
   res.json({ ...data.rows[0] });
+});
+
+app.get("/users", async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
+  res.setHeader("Content-Type", "application/json");
+  res.status(200);
+  const data = await getUsers();
+  console.log(data);
+  res.json({ total: data.rows.length, data: data.rows });
+});
+
+app.get("/reset", async (req, res) => {
+  await deleteAllDatabaseRowsAndInsertSeededData();
+  res.setHeader("Content-Type", "application/json");
+  res.status(200);
+  res.send("Successfully reset database");
 });
 
 // (async () => {
