@@ -6,10 +6,10 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
-const { createTicket, getTickets } = require("./database/tickets");
+const { createTicket, getTickets, getTicket } = require("./database/tickets");
 const { getSettings, updateSetting } = require("./database/settings");
 const { getComments, createComment } = require("./database/comments");
-const { getUsers } = require("./database/users");
+const { getUsers, getUser } = require("./database/users");
 const {
   deleteAllDatabaseRowsAndInsertSeededData,
 } = require("./database/resetDatabase");
@@ -58,6 +58,15 @@ app.get("/tickets", async (req, res) => {
   res.json({ total: data.rows.length, data: data.rows });
 });
 
+app.get("/tickets/:ticketId", async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
+  res.setHeader("Content-Type", "application/json");
+  res.status(200);
+  const data = await getTicket(req.params.ticketId);
+  const comments = await getComments(req.params.ticketId);
+  res.json({ ...data.rows[0], comments: comments.rows });
+});
+
 app.get("/settings", async (req, res) => {
   res.setHeader("Content-Type", "application/json");
   res.status(200);
@@ -97,10 +106,16 @@ app.get("/users", async (req, res) => {
   res.json({ total: data.rows.length, data: data.rows });
 });
 
-app.get("/reset", async (req, res) => {
-  await deleteAllDatabaseRowsAndInsertSeededData();
+app.get("/users/:userId", async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
   res.setHeader("Content-Type", "application/json");
   res.status(200);
+  const data = await getUser(req.params.userId);
+  res.json({ ...data.rows[0] });
+});
+
+app.get("/reset", async (req, res) => {
+  await deleteAllDatabaseRowsAndInsertSeededData();
   res.send("Successfully reset database");
 });
 

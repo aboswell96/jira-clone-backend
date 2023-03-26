@@ -38,7 +38,14 @@ const getTickets = async () => {
   return result;
 };
 
+const getTicket = async (ticketId) => {
+  const GET_TICKET = `SELECT * FROM public.tickets where id=$1`;
+  const getTicketResult = await pgClient.query(GET_TICKET, [ticketId]);
+  return getTicketResult;
+};
+
 module.exports = {
   createTicket,
   getTickets,
+  getTicket,
 };

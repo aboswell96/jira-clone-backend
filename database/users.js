@@ -21,7 +21,14 @@ const createUser = async (firstName, lastName, photoUrl) => {
   return getUserResult;
 };
 
+const getUser = async (userId) => {
+  GET_USER = `SELECT * FROM public.users where id=$1`;
+  const result = await pgClient.query(GET_USER, [userId]);
+  return result;
+};
+
 module.exports = {
   getUsers,
   createUser,
+  getUser,
 };
