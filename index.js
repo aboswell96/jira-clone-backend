@@ -6,7 +6,12 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
-const { createTicket, getTickets, getTicket } = require("./database/tickets");
+const {
+  createTicket,
+  getTickets,
+  getTicket,
+  updateTicketById,
+} = require("./database/tickets");
 const { getSettings, updateSetting } = require("./database/settings");
 const { getComments, createComment } = require("./database/comments");
 const { getUsers, getUser } = require("./database/users");
@@ -64,6 +69,18 @@ app.get("/tickets/:ticketId", async (req, res) => {
   res.status(200);
   const data = await getTicket(req.params.ticketId);
   const comments = await getComments(req.params.ticketId);
+  res.json({ ...data.rows[0], comments: comments.rows });
+});
+
+app.put("/tickets/:ticketId", async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
+  res.setHeader("Content-Type", "application/json");
+  res.status(200);
+  await updateTicketById(req.params.ticketId, req.body);
+  const data = await getTicket(req.params.ticketId);
+  console.log(data.rows[0]);
+  const comments = await getComments(req.params.ticketId);
+  console.log(comments.rows);
   res.json({ ...data.rows[0], comments: comments.rows });
 });
 

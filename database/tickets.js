@@ -44,8 +44,30 @@ const getTicket = async (ticketId) => {
   return getTicketResult;
 };
 
+const updateTicketById = async (ticketId, body) => {
+  var query = ["UPDATE public.tickets"];
+  query.push("SET");
+
+  var set = [];
+  Object.keys(body).forEach((key, i) => {
+    set.push(key + " = ($" + (i + 1) + ")");
+  });
+  query.push(set.join(", "));
+
+  query.push("WHERE id = " + "'" + ticketId + "'");
+
+  const colValues = Object.keys(body).map((key) => {
+    return body[key];
+  });
+
+  const UPDATE_TICKET_BY_ID = query.join(" ");
+
+  await pgClient.query(UPDATE_TICKET_BY_ID, colValues);
+};
+
 module.exports = {
   createTicket,
   getTickets,
   getTicket,
+  updateTicketById,
 };
