@@ -6,16 +6,33 @@ const getSettings = async () => {
   return result;
 };
 
-const updateSetting = async (settingName, newValue) => {
-  const UPDATE_SETTING = `UPDATE public.settings set setting_value=$1 where setting_name=$2`;
-  const updateSettingResult = await pgClient.query(UPDATE_SETTING, [
-    settingName,
-    newValue,
-  ]);
-  return await getSettings();
+const updateSettingById = async (settingId, body) => {
+  var query = ["UPDATE public.settings"];
+  query.push("SET");
+
+  var set = [];
+  Object.keys(body).forEach((key, i) => {
+    set.push(key + " = ($" + (i + 1) + ")");
+  });
+  query.push(set.join(", "));
+
+  query.push("WHERE setting_name = " + "'" + settingId + "'");
+
+  const colValues = Object.keys(body).map((key) => {
+    return body[key];
+  });
+
+  const UPDATE_SETTINGS = query.join(" ");
+
+  // console.log(settingId);
+  // console.log(body);
+  // console.log(UPDATE_SETTINGS);
+  // console.log(colValues);
+
+  await pgClient.query(UPDATE_SETTINGS, colValues);
 };
 
 module.exports = {
   getSettings,
-  updateSetting,
+  updateSettingById,
 };

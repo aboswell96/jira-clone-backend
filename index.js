@@ -12,7 +12,7 @@ const {
   getTicket,
   updateTicketById,
 } = require("./database/tickets");
-const { getSettings, updateSetting } = require("./database/settings");
+const { getSettings, updateSettingById } = require("./database/settings");
 const { getComments, createComment } = require("./database/comments");
 const { getUsers, getUser } = require("./database/users");
 const {
@@ -91,10 +91,12 @@ app.get("/settings", async (req, res) => {
   res.json({ settings: data.rows });
 });
 
-app.put("/settings", async (req, res) => {
+app.put("/settings/:settingId", async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
   res.setHeader("Content-Type", "application/json");
   res.status(200);
-  const data = await updateSetting();
+  await updateSettingById(req.params.settingId, req.body);
+  const data = await getSettings();
   res.json({ settings: data.rows });
 });
 

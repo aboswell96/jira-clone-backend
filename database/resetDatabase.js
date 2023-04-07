@@ -184,6 +184,22 @@ const deleteAllDatabaseRowsAndInsertSeededData = async () => {
       comment.ticket_id,
     ]);
   });
+
+  //Reset Settings
+  const deleteSettings = "DELETE FROM public.settings";
+
+  await pgClient.query(deleteSettings);
+
+  const CREATE_SETTING = `INSERT INTO public.settings VALUES ($1,$2)`;
+  [
+    { setting_name: "projectName", setting_value: "Central Park Project" },
+    { setting_name: "projectDescription", setting_value: "test description" },
+  ].forEach(async (setting) => {
+    const res = await pgClient.query(CREATE_SETTING, [
+      setting.setting_name,
+      setting.setting_value,
+    ]);
+  });
 };
 
 module.exports = {
