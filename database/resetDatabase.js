@@ -128,6 +128,11 @@ const deleteAllDatabaseRowsAndInsertSeededData = async () => {
       ]))
   );
 
+  //Reset Comments
+  const deleteComments = "DELETE FROM public.comments";
+
+  await pgClient.query(deleteComments);
+
   const oneDay = 1000 * 60 * 60 * 24;
   const seededComments = [
     {
